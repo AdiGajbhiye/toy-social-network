@@ -35,7 +35,7 @@ contract("UserList", () => {
     assert.equal(event.description, "qwe");
   });
 
-  it("add user", async () => {
+  it("add friend", async () => {
     await userList.createUser("asd", 12, "qwe");
     const result = await userList.addFriend(1, 2);
     const event = result.logs[0].args;
@@ -48,7 +48,7 @@ contract("UserList", () => {
     assert.equal(event1.isFriend, true);
   });
 
-  it("remove user", async () => {
+  it("remove friend", async () => {
     const result = await userList.removeFriend(1, 2);
     const event = result.logs[0].args;
     assert.equal(event.id.toNumber(), 1);
