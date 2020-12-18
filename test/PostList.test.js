@@ -19,7 +19,7 @@ contract("PostList", () => {
     const message = "Hello";
     const userId = 1;
     const prevCount = await postList.postCount();
-    await postList.addPost(userId, message);
+    await postList.createPost(userId, message);
     const currCount = await postList.postCount();
     assert.equal(prevCount.toNumber() + 1, currCount.toNumber());
     const post = await postList.posts(currCount.toNumber());
@@ -32,7 +32,7 @@ contract("PostList", () => {
     const prevMessage = "Hello";
     const currMessage = "Hello World";
     const userId = 1;
-    await postList.addPost(userId, prevMessage);
+    await postList.createPost(userId, prevMessage);
     const prevCount = await postList.postCount();
     await postList.updatePost(prevCount.toNumber(), currMessage);
     const currCount = await postList.postCount();

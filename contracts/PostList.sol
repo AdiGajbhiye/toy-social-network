@@ -13,7 +13,7 @@ contract PostList {
     uint256 public postCount = 0;
     mapping(uint256 => Post) public posts;
 
-    function addPost(uint256 _userId, string memory _message)
+    function createPost(uint256 _userId, string memory _message)
         public
         returns (uint256, uint256, string memory, uint256, uint256)
     {

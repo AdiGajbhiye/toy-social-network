@@ -36,7 +36,7 @@ contract Controller {
             string memory message,
             uint256 createdAt,
             uint256 updatedAt
-        ) = PostList(postListAddr).addPost(_userId, _message);
+        ) = PostList(postListAddr).createPost(_userId, _message);
         UserList(userListAddr).addPost(_userId, postId);
         emit PostUpserted(postId, userId, message, createdAt, updatedAt);
     }
