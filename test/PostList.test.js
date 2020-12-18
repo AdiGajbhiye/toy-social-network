@@ -16,22 +16,30 @@ contract("PostList", () => {
   });
 
   it("create post", async () => {
-    const postCount = await postList.postCount();
-    assert.equal(postCount.toNumber(), 0);
-    const result = await postList.addPost(1, "Hello");
-    const event = result.logs[0].args;
-    assert.equal(event.id.toNumber(), 1);
-    assert.equal(event.userId, 1);
-    assert.equal(event.message, "Hello");
+    const message = "Hello";
+    const userId = 1;
+    const prevCount = await postList.postCount();
+    await postList.addPost(userId, message);
+    const currCount = await postList.postCount();
+    assert.equal(prevCount.toNumber() + 1, currCount.toNumber());
+    const post = await postList.posts(currCount.toNumber());
+    assert.equal(post.id.toNumber(), currCount.toNumber());
+    assert.equal(post.userId.toNumber(), userId);
+    assert.equal(post.message, message);
   });
 
   it("update post", async () => {
-    const postCount = await postList.postCount();
-    assert.equal(postCount.toNumber(), 1);
-    const result = await postList.updatePost(1, "Hello World");
-    const event = result.logs[0].args;
-    assert.equal(event.id.toNumber(), 1);
-    assert.equal(event.userId, 1);
-    assert.equal(event.message, "Hello World");
+    const prevMessage = "Hello";
+    const currMessage = "Hello World";
+    const userId = 1;
+    await postList.addPost(userId, prevMessage);
+    const prevCount = await postList.postCount();
+    await postList.updatePost(prevCount.toNumber(), currMessage);
+    const currCount = await postList.postCount();
+    assert.equal(prevCount.toNumber(), currCount.toNumber());
+    const post = await postList.posts(currCount.toNumber());
+    assert.equal(post.id.toNumber(), currCount.toNumber());
+    assert.equal(post.userId.toNumber(), userId);
+    assert.equal(post.message, currMessage);
   });
 });
