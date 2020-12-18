@@ -59,4 +59,24 @@ contract("UserList", () => {
     assert.equal(event1.friendId.toNumber(), 2);
     assert.equal(event1.isFriend, false);
   });
+
+  it("add post to user", async () => {
+    let result;
+    result = await userList.createUser("asd", 12, "qwe");
+    const { id } = result.logs[0].args;
+    result = await userList.addPost(id.toNumber(), 1);
+    const { userId, postId } = result.logs[0].args;
+    assert(userId.toNumber(), id.toNumber());
+    assert(postId.toNumber(), 1);
+  });
+
+  it("remove post from user", async () => {
+    let result;
+    result = await userList.createUser("asd", 12, "qwe");
+    const { id } = result.logs[0].args;
+    result = await userList.removePost(id.toNumber(), 1);
+    const { userId, postId } = result.logs[0].args;
+    assert(userId.toNumber(), id.toNumber());
+    assert(postId.toNumber(), 1);
+  });
 });

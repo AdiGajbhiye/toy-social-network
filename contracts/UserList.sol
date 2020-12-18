@@ -8,6 +8,7 @@ contract UserList {
         uint256 age;
         string description;
         uint256[] friends;
+        uint256[] posts;
     }
 
     event UserUpserted(
@@ -20,6 +21,9 @@ contract UserList {
     event FriendAlready(uint256 id, uint256 friendId, bool isFriend);
     event FriendAdded(uint256 id, uint256 friendId);
     event FriendRemoved(uint256 id, uint256 friendId);
+    event PostAdded(uint256 userId, uint256 postId);
+    event PostRemoved(uint256 userId, uint256 postId);
+    event PostNotFound(uint256 userId, uint256 postId);
 
     uint256 public userCount = 0;
     mapping(uint256 => User) public users;
@@ -35,6 +39,7 @@ contract UserList {
             _name,
             _age,
             _description,
+            new uint256[](0),
             new uint256[](0)
         );
         emit UserUpserted(userCount, _name, _age, _description);
@@ -96,9 +101,34 @@ contract UserList {
             if (_user.friends[i] == _friendId) {
                 _user.friends[i] = _user.friends[_user.friends.length - 1];
                 _user.friends.pop();
-                emit FriendAdded(_id, _friendId);
-                break;
+                emit FriendRemoved(_id, _friendId);
+                return;
             }
         }
+    }
+
+    function addPost(uint256 _id, uint256 _postId) public {
+        User storage _user = users[_id];
+        for (uint8 i = 0; i < _user.posts.length; i++) {
+            require(
+                _user.posts[i] != _postId,
+                "You are already post with this id"
+            );
+        }
+        _user.posts.push(_postId);
+        emit PostAdded(_id, _postId);
+    }
+
+    function removePost(uint256 _id, uint256 _postId) public {
+        User storage _user = users[_id];
+        for (uint8 i = 0; i < _user.posts.length; i++) {
+            if (_user.posts[i] == _postId) {
+                _user.posts[i] = _user.posts[_user.posts.length - 1];
+                _user.posts.pop();
+                emit PostRemoved(_id, _postId);
+                return;
+            }
+        }
+        emit PostNotFound(_id, _postId);
     }
 }
