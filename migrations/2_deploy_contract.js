@@ -1,7 +1,9 @@
 const UserList = artifacts.require("./UserList.sol");
 const PostList = artifacts.require("./PostList.sol");
+const Controller = artifacts.require("./Controller.sol");
 
-module.exports = (deployer) => {
-  deployer.deploy(UserList);
-  deployer.deploy(PostList);
+module.exports = async (deployer) => {
+  await deployer.deploy(UserList);
+  await deployer.deploy(PostList);
+  await deployer.deploy(Controller, UserList.address, PostList.address);
 };

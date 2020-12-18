@@ -24,6 +24,7 @@ contract UserList {
     event PostAdded(uint256 userId, uint256 postId);
     event PostRemoved(uint256 userId, uint256 postId);
     event PostNotFound(uint256 userId, uint256 postId);
+    event PostArray(uint256 userId, uint256[] posts);
 
     uint256 public userCount = 0;
     mapping(uint256 => User) public users;
@@ -130,5 +131,9 @@ contract UserList {
             }
         }
         emit PostNotFound(_id, _postId);
+    }
+
+    function getPosts(uint256 _id) public {
+        emit PostArray(_id, users[_id].posts);
     }
 }
