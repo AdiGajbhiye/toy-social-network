@@ -34,4 +34,29 @@ contract("UserList", () => {
     assert.equal(event.age, 18);
     assert.equal(event.description, "qwe");
   });
+
+  it("add user", async () => {
+    await userList.createUser("asd", 12, "qwe");
+    const result = await userList.addFriend(1, 2);
+    const event = result.logs[0].args;
+    assert.equal(event.id.toNumber(), 1);
+    assert.equal(event.friendId.toNumber(), 2);
+    const result1 = await userList.isFriend(1, 2);
+    const event1 = result1.logs[0].args;
+    assert.equal(event1.id.toNumber(), 1);
+    assert.equal(event1.friendId.toNumber(), 2);
+    assert.equal(event1.isFriend, true);
+  });
+
+  it("remove user", async () => {
+    const result = await userList.removeFriend(1, 2);
+    const event = result.logs[0].args;
+    assert.equal(event.id.toNumber(), 1);
+    assert.equal(event.friendId.toNumber(), 2);
+    const result1 = await userList.isFriend(1, 2);
+    const event1 = result1.logs[0].args;
+    assert.equal(event1.id.toNumber(), 1);
+    assert.equal(event1.friendId.toNumber(), 2);
+    assert.equal(event1.isFriend, false);
+  });
 });
