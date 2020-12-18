@@ -1,3 +1,5 @@
+const { checkAddress } = require("./utils");
+
 const PostList = artifacts.require("./PostList.sol");
 
 contract("PostList", () => {
@@ -7,13 +9,7 @@ contract("PostList", () => {
     postList = await PostList.deployed();
   });
 
-  it("deploys successfully", async () => {
-    const address = await postList.address;
-    assert.notEqual(address, 0x0);
-    assert.notEqual(address, "");
-    assert.notEqual(address, null);
-    assert.notEqual(address, undefined);
-  });
+  it("deploys successfully", () => checkAddress(postList));
 
   it("create post", async () => {
     const message = "Hello";

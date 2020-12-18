@@ -1,3 +1,5 @@
+const { checkAddress, getEvent } = require("./utils");
+
 const Controller = artifacts.require("./Controller.sol");
 const PostList = artifacts.require("./PostList.sol");
 const UserList = artifacts.require("./UserList.sol");
@@ -11,28 +13,22 @@ contract("Controller", () => {
     );
   });
 
-  it("deploys successfully", async () => {
-    const address = await controller.address;
-    assert.notEqual(address, 0x0);
-    assert.notEqual(address, "");
-    assert.notEqual(address, null);
-    assert.notEqual(address, undefined);
-  });
+  it("deploys successfully", () => checkAddress(controller));
 
   it("create and update post", async () => {
-    let result;
     const _message = "Hello";
-    result = await userList.createUser("asd", 12, "qwe");
-    const { id: _userId } = result.logs[0].args;
-    result = await controller.createPost(_userId.toNumber(), _message);
-    const { postId, userId, message } = result.logs[0].args;
+    const { id: _userId } = await getEvent(
+      userList.createUser("asd", 12, "qwe")
+    );
+    const { postId, userId, message } = await getEvent(
+      controller.createPost(_userId.toNumber(), _message)
+    );
     assert.equal(userId.toNumber(), _userId.toNumber());
     assert.equal(message, _message);
     const post = await postList.posts(postId.toNumber());
     assert.equal(post.userId.toNumber(), _userId.toNumber());
     assert.equal(post.message, _message);
-    result = await userList.getPosts(_userId.toNumber());
-    const { posts } = result.logs[0].args;
+    const { posts } = await getEvent(userList.getPosts(_userId.toNumber()));
     assert.equal(
       posts.map((i) => i.toNumber()).includes(postId.toNumber()),
       true

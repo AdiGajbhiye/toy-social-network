@@ -1,3 +1,5 @@
+const { checkAddress, getEvent } = require("./utils");
+
 const UserList = artifacts.require("./UserList.sol");
 
 contract("UserList", () => {
@@ -7,23 +9,18 @@ contract("UserList", () => {
     userList = await UserList.deployed();
   });
 
-  it("deploys successfully", async () => {
-    const address = await userList.address;
-    assert.notEqual(address, 0x0);
-    assert.notEqual(address, "");
-    assert.notEqual(address, null);
-    assert.notEqual(address, undefined);
-  });
+  it("deploys successfully", () => checkAddress(userList));
 
   it("create user", async () => {
     const userCount = await userList.userCount();
     assert.equal(userCount.toNumber(), 0);
-    const result = await userList.createUser("asd", 12, "qwe");
-    const event = result.logs[0].args;
-    assert.equal(event.id.toNumber(), 1);
-    assert.equal(event.name, "asd");
-    assert.equal(event.age, 12);
-    assert.equal(event.description, "qwe");
+    const { id, name, age, description } = await getEvent(
+      userList.createUser("asd", 12, "qwe")
+    );
+    assert.equal(id.toNumber(), 1);
+    assert.equal(name, "asd");
+    assert.equal(age, 12);
+    assert.equal(description, "qwe");
   });
 
   it("update user", async () => {
